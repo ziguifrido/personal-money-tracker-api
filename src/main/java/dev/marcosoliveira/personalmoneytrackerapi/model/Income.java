@@ -19,5 +19,13 @@ public class Income {
   private String description;
   private BigDecimal value;
   private LocalDateTime date;
+
+  public Income() {}
+
+  public Income(String description, BigDecimal value, LocalDateTime date) {
+    this.description = description;
+    this.value = value;
+    this.date = date;
+  }
   
 }
