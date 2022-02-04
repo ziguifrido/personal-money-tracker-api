@@ -35,6 +35,15 @@ public class IncomeController {
   @Transactional
   public ResponseEntity<IncomeDto> create(@RequestBody @Valid IncomeForm form, UriComponentsBuilder uriBuilder) {
     Income income = form.convert();
+
+    List<Income> list = incomeRepository.findByDescriptionAndMonth(
+      income.getDescription(),
+      income.getDate().getMonthValue(),
+      income.getDate().getYear());
+
+    if (!list.isEmpty())
+      return ResponseEntity.unprocessableEntity().build();
+    
     incomeRepository.save(income);
 
     URI uri = uriBuilder.path("/income/{id}").buildAndExpand(income.getId()).toUri();
