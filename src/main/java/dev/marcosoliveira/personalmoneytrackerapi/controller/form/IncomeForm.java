@@ -22,6 +22,13 @@ public class IncomeForm {
 
   public Income convert() {
     return new Income(description, value, date);
-  } 
+  }
+
+  public Income update(Income income) {
+    income.setDescription(description);
+    income.setValue(value);
+    income.setDate(date);
+    return income;
+  }
 
 }
