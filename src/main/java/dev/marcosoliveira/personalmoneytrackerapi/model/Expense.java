@@ -14,18 +14,22 @@ import lombok.Data;
 @Entity
 public class Expense {
 
-  @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String description;
   private BigDecimal value;
   private LocalDateTime date;
+  private Category category;
 
-  public Expense() {}
+  public Expense() {
+  }
 
-  public Expense(String description, BigDecimal value, LocalDateTime date) {
+  public Expense(String description, BigDecimal value, LocalDateTime date, Category category) {
     this.description = description;
     this.value = value;
     this.date = date;
+    this.category = category == null ? Category.OTHER : category;
   }
-  
+
 }

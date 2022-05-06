@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import dev.marcosoliveira.personalmoneytrackerapi.model.Category;
 import dev.marcosoliveira.personalmoneytrackerapi.model.Expense;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,15 +20,17 @@ public class ExpenseForm {
   private BigDecimal value;
   @NotNull 
   private LocalDateTime date;
+  private Category category;
 
   public Expense convert() {
-    return new Expense(description, value, date);
+    return new Expense(description, value, date, category);
   }
 
   public Expense update(Expense expense) {
     expense.setDescription(description);
     expense.setValue(value);
     expense.setDate(date);
+    expense.setCategory(category);
     return expense;
   }
 
