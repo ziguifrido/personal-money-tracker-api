@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,6 +33,35 @@ public class ExpenseController {
   @Autowired
   private ExpenseRepository expenseRepository;
 
+  // --------------------------------------- GET ---------------------------------------
+  
+  @GetMapping
+  public List<ExpenseDto> list(@RequestParam(required = false) String description) {
+    List<Expense> expenseList = description != null ?
+    expenseRepository.findByDescription(description) :
+    expenseRepository.findAll();
+    
+    return ExpenseDto.convert(expenseList);
+  }
+  
+  @GetMapping("/{id}")
+  public ResponseEntity<ExpenseDto> detail(@PathVariable Long id) {
+    Optional<Expense> optional = expenseRepository.findById(id);
+    
+    if (!optional.isPresent())
+    return ResponseEntity.notFound().build();
+    
+    return ResponseEntity.ok(new ExpenseDto(optional.get()));
+  }
+
+  @GetMapping("/{year}/{month}")
+  public List<ExpenseDto> listMonth(@PathVariable int year, @PathVariable int month){
+    List<Expense> expenseList = expenseRepository.findByMonth(year, month);
+
+    return ExpenseDto.convert(expenseList);
+  }
+  
+  // --------------------------------------- POST ---------------------------------------
   @PostMapping
   @Transactional
   public ResponseEntity<ExpenseDto> create(@RequestBody @Valid ExpenseForm form, UriComponentsBuilder uriBuilder) {
@@ -51,23 +81,7 @@ public class ExpenseController {
     return ResponseEntity.created(uri).body(new ExpenseDto(expense));
   }
 
-  @GetMapping
-  public List<ExpenseDto> list() {
-    List<Expense> expenseList = expenseRepository.findAll();
-
-    return ExpenseDto.convert(expenseList);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<ExpenseDto> detail(@PathVariable Long id) {
-    Optional<Expense> optional = expenseRepository.findById(id);
-
-    if (!optional.isPresent())
-      return ResponseEntity.notFound().build();
-
-    return ResponseEntity.ok(new ExpenseDto(optional.get()));
-  }
-
+  // --------------------------------------- PUT ---------------------------------------
   @Transactional
   @PutMapping("/{id}")
   public ResponseEntity<ExpenseDto> update(@PathVariable Long id, @RequestBody @Valid ExpenseForm form){
@@ -90,6 +104,7 @@ public class ExpenseController {
     return ResponseEntity.ok(new ExpenseDto(expense));
   }
 
+  // --------------------------------------- DELETE ---------------------------------------
   @Transactional
   @DeleteMapping("/{id}")
   public ResponseEntity<?> delete(@PathVariable Long id) {

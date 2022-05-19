@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -32,6 +33,34 @@ public class IncomeController {
   @Autowired
   private IncomeRepository incomeRepository;
 
+  // --------------------------------------- GET ---------------------------------------
+  @GetMapping
+  public List<IncomeDto> list(@RequestParam(required = false) String description) {
+    List<Income> incomeList = description != null ? 
+      incomeRepository.findByDescription(description) : 
+      incomeRepository.findAll();
+
+    return IncomeDto.convert(incomeList);
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<IncomeDto> detail(@PathVariable Long id) {
+    Optional<Income> optional = incomeRepository.findById(id);
+
+    if (!optional.isPresent())
+      return ResponseEntity.notFound().build();
+
+    return ResponseEntity.ok(new IncomeDto(optional.get()));
+  }
+
+  @GetMapping("/{year}/{month}")
+  public List<IncomeDto> listMonth(@PathVariable int year, @PathVariable int month) {
+    List<Income> incomeList = incomeRepository.findByMonth(year, month);
+    
+    return IncomeDto.convert(incomeList);
+  }
+
+  // --------------------------------------- POST ---------------------------------------
   @PostMapping
   @Transactional
   public ResponseEntity<IncomeDto> create(@RequestBody @Valid IncomeForm form, UriComponentsBuilder uriBuilder) {
@@ -51,23 +80,7 @@ public class IncomeController {
     return ResponseEntity.created(uri).body(new IncomeDto(income));
   }
 
-  @GetMapping
-  public List<IncomeDto> list() {
-    List<Income> incomeList = incomeRepository.findAll();
-
-    return IncomeDto.convert(incomeList);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<IncomeDto> detail(@PathVariable Long id) {
-    Optional<Income> optional = incomeRepository.findById(id);
-
-    if (!optional.isPresent())
-      return ResponseEntity.notFound().build();
-
-    return ResponseEntity.ok(new IncomeDto(optional.get()));
-  }
-
+  // --------------------------------------- PUT ---------------------------------------
   @Transactional
   @PutMapping("/{id}")
   public ResponseEntity<IncomeDto> update(@PathVariable Long id, @RequestBody @Valid IncomeForm form){
@@ -90,6 +103,7 @@ public class IncomeController {
     return ResponseEntity.ok(new IncomeDto(income));
   }
 
+  // --------------------------------------- DELETE ---------------------------------------
   @Transactional
   @DeleteMapping("/{id}")
   public ResponseEntity<?> delete(@PathVariable Long id) {
