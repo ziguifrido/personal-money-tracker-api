@@ -33,25 +33,7 @@ public class IncomeController {
   @Autowired
   private IncomeRepository incomeRepository;
 
-  @PostMapping
-  @Transactional
-  public ResponseEntity<IncomeDto> create(@RequestBody @Valid IncomeForm form, UriComponentsBuilder uriBuilder) {
-    Income income = form.convert();
-
-    List<Income> list = incomeRepository.findByDescriptionAndMonth(
-      income.getDescription(),
-      income.getDate().getMonthValue(),
-      income.getDate().getYear());
-
-    if (!list.isEmpty())
-      return ResponseEntity.unprocessableEntity().build();
-    
-    incomeRepository.save(income);
-
-    URI uri = uriBuilder.path("/income/{id}").buildAndExpand(income.getId()).toUri();
-    return ResponseEntity.created(uri).body(new IncomeDto(income));
-  }
-
+  // --------------------------------------- GET ---------------------------------------
   @GetMapping
   public List<IncomeDto> list(@RequestParam(required = false) String description) {
     List<Income> incomeList = description != null ? 
@@ -71,6 +53,34 @@ public class IncomeController {
     return ResponseEntity.ok(new IncomeDto(optional.get()));
   }
 
+  @GetMapping("/{year}/{month}")
+  public List<IncomeDto> listMonth(@PathVariable int year, @PathVariable int month) {
+    List<Income> incomeList = incomeRepository.findByMonth(year, month);
+    
+    return IncomeDto.convert(incomeList);
+  }
+
+  // --------------------------------------- POST ---------------------------------------
+  @PostMapping
+  @Transactional
+  public ResponseEntity<IncomeDto> create(@RequestBody @Valid IncomeForm form, UriComponentsBuilder uriBuilder) {
+    Income income = form.convert();
+
+    List<Income> list = incomeRepository.findByDescriptionAndMonth(
+      income.getDescription(),
+      income.getDate().getMonthValue(),
+      income.getDate().getYear());
+
+    if (!list.isEmpty())
+      return ResponseEntity.unprocessableEntity().build();
+    
+    incomeRepository.save(income);
+
+    URI uri = uriBuilder.path("/income/{id}").buildAndExpand(income.getId()).toUri();
+    return ResponseEntity.created(uri).body(new IncomeDto(income));
+  }
+
+  // --------------------------------------- PUT ---------------------------------------
   @Transactional
   @PutMapping("/{id}")
   public ResponseEntity<IncomeDto> update(@PathVariable Long id, @RequestBody @Valid IncomeForm form){
@@ -93,6 +103,7 @@ public class IncomeController {
     return ResponseEntity.ok(new IncomeDto(income));
   }
 
+  // --------------------------------------- DELETE ---------------------------------------
   @Transactional
   @DeleteMapping("/{id}")
   public ResponseEntity<?> delete(@PathVariable Long id) {

@@ -33,6 +33,35 @@ public class ExpenseController {
   @Autowired
   private ExpenseRepository expenseRepository;
 
+  // --------------------------------------- GET ---------------------------------------
+  
+  @GetMapping
+  public List<ExpenseDto> list(@RequestParam(required = false) String description) {
+    List<Expense> expenseList = description != null ?
+    expenseRepository.findByDescription(description) :
+    expenseRepository.findAll();
+    
+    return ExpenseDto.convert(expenseList);
+  }
+  
+  @GetMapping("/{id}")
+  public ResponseEntity<ExpenseDto> detail(@PathVariable Long id) {
+    Optional<Expense> optional = expenseRepository.findById(id);
+    
+    if (!optional.isPresent())
+    return ResponseEntity.notFound().build();
+    
+    return ResponseEntity.ok(new ExpenseDto(optional.get()));
+  }
+
+  @GetMapping("/{year}/{month}")
+  public List<ExpenseDto> listMonth(@PathVariable int year, @PathVariable int month){
+    List<Expense> expenseList = expenseRepository.findByMonth(year, month);
+
+    return ExpenseDto.convert(expenseList);
+  }
+  
+  // --------------------------------------- POST ---------------------------------------
   @PostMapping
   @Transactional
   public ResponseEntity<ExpenseDto> create(@RequestBody @Valid ExpenseForm form, UriComponentsBuilder uriBuilder) {
@@ -52,25 +81,7 @@ public class ExpenseController {
     return ResponseEntity.created(uri).body(new ExpenseDto(expense));
   }
 
-  @GetMapping
-  public List<ExpenseDto> list(@RequestParam(required = false) String description) {
-    List<Expense> expenseList = description != null ?
-      expenseRepository.findByDescription(description) :
-      expenseRepository.findAll();
-
-    return ExpenseDto.convert(expenseList);
-  }
-
-  @GetMapping("/{id}")
-  public ResponseEntity<ExpenseDto> detail(@PathVariable Long id) {
-    Optional<Expense> optional = expenseRepository.findById(id);
-
-    if (!optional.isPresent())
-      return ResponseEntity.notFound().build();
-
-    return ResponseEntity.ok(new ExpenseDto(optional.get()));
-  }
-
+  // --------------------------------------- PUT ---------------------------------------
   @Transactional
   @PutMapping("/{id}")
   public ResponseEntity<ExpenseDto> update(@PathVariable Long id, @RequestBody @Valid ExpenseForm form){
@@ -93,6 +104,7 @@ public class ExpenseController {
     return ResponseEntity.ok(new ExpenseDto(expense));
   }
 
+  // --------------------------------------- DELETE ---------------------------------------
   @Transactional
   @DeleteMapping("/{id}")
   public ResponseEntity<?> delete(@PathVariable Long id) {
