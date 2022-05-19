@@ -16,4 +16,6 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
     "i.description = ?1 and month(i.date) = ?2 and year(i.date) = ?3 and not i.id = ?4")
   public List<Income> findByDescriptionAndMonthNotId(String description, Integer month, Integer year, Long id);
 
+  public List<Income> findByDescription(String description);
+
 }

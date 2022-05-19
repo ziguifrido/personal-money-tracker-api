@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -52,8 +53,10 @@ public class ExpenseController {
   }
 
   @GetMapping
-  public List<ExpenseDto> list() {
-    List<Expense> expenseList = expenseRepository.findAll();
+  public List<ExpenseDto> list(@RequestParam(required = false) String description) {
+    List<Expense> expenseList = description != null ?
+      expenseRepository.findByDescription(description) :
+      expenseRepository.findAll();
 
     return ExpenseDto.convert(expenseList);
   }
