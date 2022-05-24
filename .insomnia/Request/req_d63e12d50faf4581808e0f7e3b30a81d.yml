@@ -1,0 +1,21 @@
+_id: req_d63e12d50faf4581808e0f7e3b30a81d
+type: Request
+parentId: wrk_2d3b87d3e1da4b6d9621bdbb6bb0f627
+modified: 1652931111611
+created: 1651438261995
+url: localhost:8080/income
+name: Income List
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: 1200
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

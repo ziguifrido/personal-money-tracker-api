@@ -1,0 +1,31 @@
+_id: req_49d4c8ec69e1492b9a4ddfb447088031
+type: Request
+parentId: wrk_2d3b87d3e1da4b6d9621bdbb6bb0f627
+modified: 1653355564729
+created: 1651437439342
+url: localhost:8080/expense/6
+name: Expense Update
+description: ""
+method: PUT
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"description": "TEST",
+    	"value": 5000,
+    	"date" : "2022-01-15T08:00:00"	
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_10ed4859cc244a708b9147acfc821067
+authentication: {}
+metaSortKey: 600
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

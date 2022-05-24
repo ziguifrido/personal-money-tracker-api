@@ -1,0 +1,32 @@
+_id: req_d75683530bcc428baa98dd3151e81dec
+type: Request
+parentId: wrk_2d3b87d3e1da4b6d9621bdbb6bb0f627
+modified: 1653355873423
+created: 1651437200108
+url: localhost:8080/expense
+name: Expense Create
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"description": "Test 2",
+    	"value": 5000,
+    	"date" : "2022-01-15T08:00:00",
+    	"category": 2
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+    id: pair_f5ab25fc5d364149af98506f9596c1f0
+authentication: {}
+metaSortKey: 0
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
