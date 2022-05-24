@@ -1,0 +1,21 @@
+_id: req_57b80ff5df6449bcb703cee2262bac36
+type: Request
+parentId: wrk_2d3b87d3e1da4b6d9621bdbb6bb0f627
+modified: 1652931111611
+created: 1651438234819
+url: localhost:8080/income/1
+name: Income Detail
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: 900
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

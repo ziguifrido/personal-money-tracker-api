@@ -1,0 +1,21 @@
+_id: req_8fa32552de7149f39c0a9f970a2752ee
+type: Request
+parentId: wrk_2d3b87d3e1da4b6d9621bdbb6bb0f627
+modified: 1653187509628
+created: 1653182967774
+url: localhost:8080/report/2022/01
+name: Report MonthlyReport
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1653182967774
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
