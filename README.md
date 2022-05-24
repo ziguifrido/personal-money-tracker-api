@@ -3,5 +3,26 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/ziguifrido/personal-money-tracker-api)
 
 # Personal Money Tracker API 
+Simple and straightforward money tracker API written in Java.
 
-###	🚧  Under Construction...  🚧
+## Prerequisites
+- [Java](https://www.oracle.com/java/technologies/downloads/)
+- [Maven](https://maven.apache.org/install.html)
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+
+## Development
+Clone the repository :
+```shell
+  git clone https://github.com/ziguifrido/personal-money-tracker-api.git
+``` 
+Move to the project folder :
+```shell
+  cd personal-money-tracker-api
+```
+Run :
+```shell
+  mvn spring-boot:run
+```
+
+## Licence
+This projet uses the [MIT license](https://github.com/ziguifrido/personal-money-tracker-api/blob/main/LICENSE).
