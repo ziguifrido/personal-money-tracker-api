@@ -11,7 +11,7 @@
 
 	<groupId>dev.marcosoliveira</groupId>
 	<artifactId>personal-money-tracker-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>personal-money-tracker-api</name>
 	<description>Personal Money Tracker</description>
 
