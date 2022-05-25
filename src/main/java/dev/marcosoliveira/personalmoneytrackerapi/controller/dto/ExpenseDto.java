@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import dev.marcosoliveira.personalmoneytrackerapi.model.Category;
 import dev.marcosoliveira.personalmoneytrackerapi.model.Expense;
 import lombok.Data;
@@ -26,6 +28,10 @@ public class ExpenseDto {
 
   public static List<ExpenseDto> convert(List<Expense> expenseList) {
     return expenseList.stream().map(ExpenseDto::new).collect(Collectors.toList());
+  }
+
+  public static Page<ExpenseDto> convertPage(Page<Expense> expenseList) {
+    return expenseList.map(ExpenseDto::new);
   }
 
 }
