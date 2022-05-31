@@ -7,6 +7,10 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +29,6 @@ import dev.marcosoliveira.personalmoneytrackerapi.controller.form.ExpenseForm;
 import dev.marcosoliveira.personalmoneytrackerapi.model.Expense;
 import dev.marcosoliveira.personalmoneytrackerapi.repository.ExpenseRepository;
 
-
 @RestController
 @RequestMapping("/expense")
 public class ExpenseController {
@@ -34,33 +37,37 @@ public class ExpenseController {
   private ExpenseRepository expenseRepository;
 
   // --------------------------------------- GET ---------------------------------------
-  
+
   @GetMapping
-  public List<ExpenseDto> list(@RequestParam(required = false) String description) {
-    List<Expense> expenseList = description != null ?
-    expenseRepository.findByDescription(description) :
-    expenseRepository.findAll();
-    
-    return ExpenseDto.convert(expenseList);
+  public Page<ExpenseDto> list(@RequestParam(required = false) String description,
+      @PageableDefault(sort = "date", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
+
+    Page<Expense> expenseList = description != null 
+        ? expenseRepository.findByDescription(description, pageable)
+        : expenseRepository.findAll(pageable);
+
+    return ExpenseDto.convertPage(expenseList);
   }
-  
+
   @GetMapping("/{id}")
   public ResponseEntity<ExpenseDto> detail(@PathVariable Long id) {
     Optional<Expense> optional = expenseRepository.findById(id);
-    
+
     if (!optional.isPresent())
-    return ResponseEntity.notFound().build();
-    
+      return ResponseEntity.notFound().build();
+
     return ResponseEntity.ok(new ExpenseDto(optional.get()));
   }
 
   @GetMapping("/{year}/{month}")
-  public List<ExpenseDto> listMonth(@PathVariable int year, @PathVariable int month){
-    List<Expense> expenseList = expenseRepository.findByMonth(year, month);
+  public Page<ExpenseDto> listMonth(@PathVariable int year, @PathVariable int month,
+    @PageableDefault(sort = "date", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
+      
+    Page<Expense> expenseList = expenseRepository.findByMonth(year, month, pageable);
 
-    return ExpenseDto.convert(expenseList);
+    return ExpenseDto.convertPage(expenseList);
   }
-  
+
   // --------------------------------------- POST ---------------------------------------
   @PostMapping
   @Transactional
@@ -68,13 +75,13 @@ public class ExpenseController {
     Expense expense = form.convert();
 
     List<Expense> list = expenseRepository.findByDescriptionAndMonth(
-      expense.getDescription(),
-      expense.getDate().getMonthValue(),
-      expense.getDate().getYear());
+        expense.getDescription(),
+        expense.getDate().getMonthValue(),
+        expense.getDate().getYear());
 
     if (!list.isEmpty())
       return ResponseEntity.unprocessableEntity().build();
-    
+
     expenseRepository.save(expense);
 
     URI uri = uriBuilder.path("/expense/{id}").buildAndExpand(expense.getId()).toUri();
@@ -84,12 +91,12 @@ public class ExpenseController {
   // --------------------------------------- PUT ---------------------------------------
   @Transactional
   @PutMapping("/{id}")
-  public ResponseEntity<ExpenseDto> update(@PathVariable Long id, @RequestBody @Valid ExpenseForm form){
+  public ResponseEntity<ExpenseDto> update(@PathVariable Long id, @RequestBody @Valid ExpenseForm form) {
     List<Expense> list = expenseRepository.findByDescriptionAndMonthNotId(
-      form.getDescription(),
-      form.getDate().getMonthValue(),
-      form.getDate().getYear(),
-      id);
+        form.getDescription(),
+        form.getDate().getMonthValue(),
+        form.getDate().getYear(),
+        id);
 
     if (!list.isEmpty())
       return ResponseEntity.unprocessableEntity().build();
@@ -115,5 +122,5 @@ public class ExpenseController {
 
     return ResponseEntity.ok().build();
   }
-  
+
 }

@@ -7,6 +7,10 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,12 +39,14 @@ public class IncomeController {
 
   // --------------------------------------- GET ---------------------------------------
   @GetMapping
-  public List<IncomeDto> list(@RequestParam(required = false) String description) {
-    List<Income> incomeList = description != null ? 
-      incomeRepository.findByDescription(description) : 
-      incomeRepository.findAll();
+  public Page<IncomeDto> list(@RequestParam(required = false) String description,
+    @PageableDefault(sort = "date", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
 
-    return IncomeDto.convert(incomeList);
+    Page<Income> incomeList = description != null ? 
+      incomeRepository.findByDescription(description, pageable) : 
+      incomeRepository.findAll(pageable);
+
+    return IncomeDto.convertPage(incomeList);
   }
 
   @GetMapping("/{id}")
@@ -54,10 +60,12 @@ public class IncomeController {
   }
 
   @GetMapping("/{year}/{month}")
-  public List<IncomeDto> listMonth(@PathVariable int year, @PathVariable int month) {
-    List<Income> incomeList = incomeRepository.findByMonth(year, month);
+  public Page<IncomeDto> listMonth(@PathVariable int year, @PathVariable int month,
+    @PageableDefault(sort = "date", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
     
-    return IncomeDto.convert(incomeList);
+    Page<Income> incomeList = incomeRepository.findByMonth(year, month, pageable);
+    
+    return IncomeDto.convertPage(incomeList);
   }
 
   // --------------------------------------- POST ---------------------------------------
