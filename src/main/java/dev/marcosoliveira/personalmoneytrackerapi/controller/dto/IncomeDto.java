@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import dev.marcosoliveira.personalmoneytrackerapi.model.Income;
 import lombok.Data;
 
@@ -24,6 +26,10 @@ public class IncomeDto {
   public static List<IncomeDto> convert(List<Income> incomeList) {
     return incomeList.stream().map(IncomeDto::new).collect(Collectors.toList());
   }
+
+public static Page<IncomeDto> convertPage(Page<Income> incomeList) {
+    return incomeList.map(IncomeDto::new);
+}
 
   
 }
