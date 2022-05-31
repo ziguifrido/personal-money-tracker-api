@@ -8,8 +8,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,10 +40,10 @@ public class ExpenseController {
 
   @GetMapping
   public Page<ExpenseDto> list(@RequestParam(required = false) String description,
-      @RequestParam int page, @RequestParam int size) {
-    Pageable pageable = PageRequest.of(page, size);
+      @PageableDefault(sort = "date", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
 
-    Page<Expense> expenseList = description != null ? expenseRepository.findByDescription(description, pageable)
+    Page<Expense> expenseList = description != null 
+        ? expenseRepository.findByDescription(description, pageable)
         : expenseRepository.findAll(pageable);
 
     return ExpenseDto.convertPage(expenseList);
@@ -59,10 +60,12 @@ public class ExpenseController {
   }
 
   @GetMapping("/{year}/{month}")
-  public List<ExpenseDto> listMonth(@PathVariable int year, @PathVariable int month) {
-    List<Expense> expenseList = expenseRepository.findByMonth(year, month);
+  public Page<ExpenseDto> listMonth(@PathVariable int year, @PathVariable int month,
+    @PageableDefault(sort = "date", direction = Direction.DESC, page = 0, size = 10) Pageable pageable) {
+      
+    Page<Expense> expenseList = expenseRepository.findByMonth(year, month, pageable);
 
-    return ExpenseDto.convert(expenseList);
+    return ExpenseDto.convertPage(expenseList);
   }
 
   // --------------------------------------- POST ---------------------------------------
