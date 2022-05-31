@@ -27,7 +27,7 @@ Run :
 ## Testing
 Test the API using the Open Source API client [Insomnia](https://insomnia.rest/). 
 
-Import the default requests by the Insomnia menu entry `Aplication > Preferences > Data > Import Data > From File` and selecting the .json file in the .insomnia folder of the local repository.
+Import the default requests by the Insomnia menu entry `Application > Preferences > Data > Import Data > From File` and selecting the .json file in the .insomnia folder of the local repository.
 
 ## Licence
 This projet uses the [MIT license](https://github.com/ziguifrido/personal-money-tracker-api/blob/main/LICENSE).
